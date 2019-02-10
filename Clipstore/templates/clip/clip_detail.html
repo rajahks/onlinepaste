@@ -1,0 +1,73 @@
+{% extends "clip/base.html" %}
+{% block body_block %}
+
+<h3>Clip Content:</h3>
+<div class="row">
+  <div class="col col-md-8">
+    {# If the clip is encrypted, hide the text and ask the user for password #}
+    {% if clip.isEncrypted %}
+    <div class="" id="id_clipDiv" hidden>
+    {% else %}
+    <div class="" id="id_clipDiv" >
+    {% endif %}
+      <textarea name="name" id="clipTextarea" class="form-control" rows="10" cols="40">
+        {{clip.clipText}}
+      </textarea>
+
+      <br>
+      <button class="copyBtn btn btn-dark" type="button" data-clipboard-demo=""
+          data-clipboard-target="#clipTextarea">
+        <i class="fas fa-copy"> Copy Text!</i>
+      </button>
+
+      <br>
+      <br>
+      <div class="alert alert-info" role="alert">
+        {% if clip.link_duration == 0 %}
+          <p>Note: Clip was created with "Delete on Access". Copy on the server has been
+          deleted. Hope you have copied the clip!</p>
+        {% else %}
+        <h5>Additional Details:</h5>
+        {# <p>Clip will expire in: {{ clip.expiry_date - now  </p> #}
+        <p>Clip expiry time:&nbsp&nbsp {{clip.expiry_date | date:"DATETIME_FORMAT" }}</p>
+        <p>Current time:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{% now "DATETIME_FORMAT" %}</p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-md-6">
+    {# Accept password to decrypt the text. #}
+    {% if clip.isEncrypted %}
+    <div class="" id="id_askPasswd">
+      <p class="alert alert-info" role="alert">The page is protected with a password. Enter the correct password to decrypt.</p>
+        <label for="dPasswd">Enter the password:</label>
+      <input type="text" class="form-control" name="dPasswd" id="id_dPasswd" required >
+      <div class="invalid-feedback" id="id_passErrors">
+          {# any erros will be put here #}
+      </div>
+      <br/>
+      <input type="button" class="btn btn-dark" value="Decrypt" onclick="decryptText()">
+
+      {% if clip.link_duration == 0 %}
+        <br/>
+        <br/>
+        <p>Note: Clip was created with "Delete on Access". Copy on the server has been
+        deleted. Hope you get the password right!</p>
+      {% endif %}
+
+    </div>
+
+
+
+    {% endif %}
+  </div>
+</div>
+
+{# hidden text #}
+<input type="hidden" id='detail_encryptedUrl' value="{{clip.encryptedUrl}}">
+
+{% endblock body_block %}

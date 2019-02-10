@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>OnlinePaste.in</title>
+
+    {# Bootstrap links  #}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    {# Clipboard.js cdn #}
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+
+    {# Fontawesome cdn #}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sjcl/1.0.8/sjcl.js"></script>
+    {# jquery #}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+  <body>
+    {# <nav class="navbar navbar-expand-lg navbar-light bg-light"> #}
+    {# <nav class="navbar navbar-dark bg-primary"> #}
+    {# <nav class="navbar navbar-light" style="background-color: #3498db;"> #}
+    <nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'index' %}">
+      <i class="far fa-clipboard"></i>
+      OnlinePaste.in - The Internet clipboard!</a>
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="{% url 'faq' %}">FAQ</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    {% block body_block %}
+
+    {% endblock body_block %}
+  </div>
+
+  <script>
+
+  var clipboard = new ClipboardJS('.copyBtn');
+  console.log(clipboard);
+  clipboard.on('success', function(e) {
+      console.log(e);
+  });
+  clipboard.on('error', function(e) {
+      console.log(e);
+  });
+
+    function encrypt() {
+        //alert("I have been called");
+        var userText = document.getElementById("id_clipText").value;
+        var password = document.getElementById("password").value;
+        var clip_id = document.getElementById("clip-url").value;
+        var host = window.location.href;
+        var compClipUrl = host + clip_id + "/";
+        console.log("ClipUrl:" + compClipUrl )
+        if (password.length) {
+          // encrypt the text only if there is a password.
+          try{
+            var encryptedText = sjcl.encrypt(password, userText);
+            var encryptedUrl = sjcl.encrypt(password,compClipUrl);
+            // now saved the encryptedurl and text to fields
+            document.getElementById("id_encryptedUrl").value = encryptedUrl;
+            document.getElementById("id_encryptedText").value = encryptedText;
+            // Set the field so that we know password was set.
+            document.getElementById("id_isEncrypted").value = "True"
+            return true;
+          }
+          catch(err) {
+            console.log("Error encountered during encryption "+err);
+            window.alert("Error encountered during encryption. Try again or without encryption.")
+          }
+        }
+        return false;
+        // document.getElementById("clip-url").value = "test";
+    }
+
+    function verifyPassword(enteredPass) {
+        var encryptedUrl = document.getElementById("detail_encryptedUrl").value
+        console.log("Entered password:" + enteredPass)
+        var givenClipUrl = window.location.href;
+        var decryptedUrl = ""
+
+        try {
+          decryptedUrl = sjcl.decrypt(enteredPass,encryptedUrl);
+          console.log("Decrypted url:" + decryptedUrl);
+          if(window.location.href == decryptedUrl) {
+            //window.alert("Password entered is correct");
+            return true;
+          }
+        }
+        catch(err){
+          //window.alert("Password entered is wrong.Try again!!");
+          return false;
+        }
+    }
+
+    function rDecrypt(password) {
+      var encryptedText = $('#clipTextarea').val();
+      console.log("rDecrypt called" + password + "  " + encryptedText );
+      try{
+        var decryptedText = sjcl.decrypt(password,encryptedText);
+        console.log("Decryption of text was successfull." + decryptedText);
+        // update the clip text area with the decrypted text.
+        $("#clipTextarea").val(decryptedText);
+      }
+      catch(err) {
+        console.log("Decryption error:" + err);
+        //TODO: Log and show the user that something went wrong.
+      }
+      return true;
+    }
+
+    function decryptText() {
+      var password = $("#id_dPasswd").val();
+      var passLen = password.length;
+
+      console.log("decryptText called!");
+
+      if(passLen == 0) {
+          $('#id_dPasswd').attr('class', 'form-control is-invalid');
+          $('#id_passErrors').html("Invalid password. Try again!");
+      }
+      else {
+          var isPassCorrect = verifyPassword(password);
+          if(isPassCorrect == false) {
+            $('#id_dPasswd').attr('class', 'form-control is-invalid');
+            $('#id_passErrors').html("Invalid password. Try again!");
+          }
+          else {
+            console.log("Finally found the right password:"+password);
+            $('#id_dPasswd').attr('class', 'form-control');
+            $('#id_passErrors').html("Found password");
+            // decrypt text. Hide the enter password block and show the
+            // clip text block
+            rDecrypt(password);
+            $('#id_askPasswd').hide();
+            $('#id_clipDiv').removeAttr("hidden");
+          }
+      }
+
+      // if it gets here either the entered password is correct or retrypass is
+      // correct. Either way it would be set retryPasswd
+
+    }
+
+    function isKeywordUsed() {
+      // alert("checkKeyword called");
+      var enteredKeyword = $('#clip-url').val();
+
+      $.get("{% url 'isKeywordUsed' %}",{"keyword":enteredKeyword},function(data){
+        console.log(data);
+        if(data == "True") {
+          $('#clip-url').attr('class', 'form-control is-invalid');
+          $('#clipKeyError').html("Keyword already in use. Why don't you choose another one?")
+        }
+        else {
+          $('#clip-url').attr('class', 'form-control is-valid');
+        }
+      });
+    }
+
+    function onSubmitForm(){
+      // Function called when the user has clicked on Submit button.
+      // We need to the following operations:
+      // 1) Validate fields i.e. clip text and keyword filed should be non empty
+      // 2) Check if the keyword is alreay used. If used, then return error and
+      //    donot submit the form.
+      // 3) If encryption is chosen, then encrypt the text given.
+      // 4) If all of the above goes fine, the call the submit
+
+      // Validation taken care by the html 5 attributes
+      // Lets check if keyword is used.
+      console.log("Submitting form");
+      //if( isKeywordUsed() == false )
+      var passLen =  $("#password").val().length;
+      console.log(passLen);
+      if( passLen > 0 ) {
+        // try encrypting the text
+        var encryptSuccess = encrypt();
+        if(encryptSuccess == false) {
+          // add the error msg to the error errBox
+          $("#errBox").html($("#errBox").html()+"\nError during encryption. Try again!");
+        }
+        else {
+          // encryption was successfull
+          // set the encrypted text to the clip text so that it is sent to
+          // the backend and saved.
+          $("#id_clipText").val( $("#id_encryptedText").val() );
+        }
+      }
+      // else something went wrong. Donot update the form
+    }
+
+  </script>
+
+  </body>
+</html>

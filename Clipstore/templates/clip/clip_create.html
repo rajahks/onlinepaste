@@ -1,0 +1,13 @@
+{% extends "clip/base.html" %}
+{% load bootstrap4 %}
+
+{% block body_block %}
+
+<h3>Type or paste the text below and then click on Create :</h3>
+<form action="{% url 'check_post' clipId %}" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <input type="submit" class='btn btn-primary btn-large' name="" value="Create">
+</form>
+
+{% endblock body_block %}

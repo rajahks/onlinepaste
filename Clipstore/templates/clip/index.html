@@ -1,0 +1,79 @@
+{% extends "clip/base.html" %}
+{% load bootstrap4 %}
+
+{% block body_block %}
+<!-- <h3>OnlinePaste: The internet clipboard! </h3> -->
+<div class="row">
+  <div class="col">
+
+<p id="errBox" class="is-invalid">
+  {{ form.errors }}
+  {{ form.non_field_errors }}
+</p>
+
+<form action="" method="post" id="id_clipForm" onsubmit="onSubmitForm()">
+  {% csrf_token %}
+
+  {% bootstrap_form form %}
+
+  <input type="hidden" id="id_encryptedText" name="encryptedText" value="">
+
+<label for="clip-url">Your URL (Edit the keyword for a custom url)</label>
+  <div class="row">
+  <div class="input-group mb-3 col-md-6">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="host_prefix">
+        {% if request.is_secure %}
+          https://{{request.get_host}}/
+        {% else %}
+          http://{{request.get_host}}/
+        {% endif %}
+      </span>
+    </div>
+    {% if clipIdErr %}
+    <input type="text" class="form-control is-invalid" id="clip-url" name="clip-url"
+        aria-describedby="host_prefix" value="{{randClipId}}" required >
+    {% else %}
+    <input type="text" class="form-control" id="clip-url" name="clip-url"
+        aria-describedby="host_prefix" value="{{randClipId}}" required>
+    {% endif %}
+    <div class="invalid-feedback" id="clipKeyError">
+        {{ clipIdErr }}
+    </div>
+    <div class="valid-feedback" id="clipKeyError">
+        Keyword available!
+    </div>
+  </div>
+  <div class="col">
+    <input type="button" class="btn btn-outline-dark" onclick="isKeywordUsed()" value="Check"/>
+  </div>
+</div>
+<div class="row">
+  <div class="col col-md-6">
+    <label for="password">Protect with Password (optional):</label>
+    <input class="form-control" type="text" id="password" name="password" value="">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3">
+    <br/>
+    <input type="submit" class='btn btn-dark btn-large' name="" value="Create">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <br/>
+    <p>Note: Expire "On Access" clips are removed automatically after 30 days in case of no access.</p>
+  </div>
+</div>
+
+
+</form>
+
+  </div>
+</div>
+{% endblock body_block %}
+
+{# {% url 'check_post' randClipId %}  #}

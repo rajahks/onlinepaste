@@ -1,0 +1,41 @@
+{% extends "clip/base.html" %}
+{% block body_block %}
+
+{# <div class="alert alert-success" role="alert"> #}
+<h4 style="color:green">
+Clip was created successfully
+</h4>
+{# </div> #}
+{# <h2>Url = {{clipUri}}</h2> #}
+{# <input type="text" name="" value='{{clipObj.clipText}}'></input> #}
+
+<div class="row">
+<div class="col-md-6 input-group">
+
+  <input type="text" id="copyText" class="form-control" placeholder="url"
+    aria-label="Link" aria-describedby="link-addon" value="{{clipUri}}" >
+  <div class="input-group-append">
+      <button class="copyBtn btn btn-dark" id="link-addon" type="button" data-clipboard-target="#copyText">
+        <i class="fas fa-copy"> Copy </i>
+      </button>
+  </div>
+</div>
+</div>
+
+<!--
+<div class="row">
+  <div class="input-group suffix">
+    <input id="copyText" type="text" class="form-control" value="{{clipUri}}">
+    <span class="input-group-addon suffix">
+      <button class="btn btn-success" style="border-radius: 0px 5px 5px 0px" type="button" data-clipboard-demo="" data-clipboard-target="#copyText">
+      <i class="fas fa-copy"> Copy </i>
+      </button>
+    </span>
+  </div>
+</div>
+-->
+
+
+
+{% endblock body_block %}
+{# input-group-button #}

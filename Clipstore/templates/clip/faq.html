@@ -1,0 +1,101 @@
+{% extends "clip/base.html" %}
+{% block body_block %}
+
+<div class="jumbotron">
+  <p>OnlinePaste.in is an 'internet clipboard' or 'online pasteboard' which
+    allows you to easily share text using the internet.
+  </p>
+  <p>Features:
+    <ol>
+      <li>
+        Simple interface: A easy to use interface which allows one to create clips.
+      </li>
+      <li>
+        Custom keyword: It generates random clip ids for every clip but also allows you to choose
+        your own keyworld.
+      </li>
+      <li>
+        Password Protection: Password protected clips can be created.
+      </li>
+    </ol>
+  </p>
+</div>
+
+<h1>Frequently Asked Questions</h1>
+
+<div class="accordion" id="accordionFaq">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Was open source software used ?
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionFaq">
+      <div class="card-body">
+        We love open source and believe in giving credit to them when used.
+        The following components have been used:
+        <ul>
+          <li>Django - Web Framework</li>
+          <li>Bootstrap - For styling</li>
+          <li>Clipboard.js - To enable easy copying of the link and text</li>
+          <li>Fontawesome - Icons </li>
+          <li>sjcl.js - JavaScript cypto library to perform in browser encryption and decryption</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Do we store passwords ?
+        </button>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionFaq">
+      <div class="card-body">
+        <p>
+        To keep things simple and secure, we use a JavaScript crypto library to
+        perform encryption and decryption in the browser itself.
+        When the user enters a password, the text is encrypted in the browser
+        and sent to the server.
+        Since we perform the crypto operations in the browser, we do not need
+        the password in the server and so they are not even sent to the server.
+        <br>
+        This means that we have no way of knowing what is encrypted and
+        also means we cannot retrieve the text in case the password is lost.
+        <br>
+        In short: Passwords are never stored on the server!
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          So how do we validate if the password is valid during decryption?
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
+      <div class="card-body">
+        During encryption, we also encrypt a well known text associated with
+        each clip, in this case the clip url and store it in the db.
+        <br>
+        When the user tries to access a encrypted clip and enters a password,
+        we try to decrypt this encrypted url first. If the decryption succeeds
+        and the decrypted url matches the clip url, we will then try to decrypt
+        the actual text using the password.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endblock body_block %}
