@@ -10,15 +10,29 @@ Clip was created successfully
 {# <input type="text" name="" value='{{clipObj.clipText}}'></input> #}
 
 <div class="row">
-<div class="col-md-6 input-group">
-
-  <input type="text" id="copyText" class="form-control" placeholder="url"
-    aria-label="Link" aria-describedby="link-addon" value="{{clipUri}}" >
-  <div class="input-group-append">
-      <button class="copyBtn btn btn-dark" id="link-addon" type="button" data-clipboard-target="#copyText">
-        <i class="fas fa-copy"> Copy </i>
-      </button>
+<div class="col-md-6">
+  <div class="input-group">
+    <input type="text" id="copyText" class="form-control" placeholder="url"
+      aria-label="Link" aria-describedby="link-addon" value="{{clipUri}}" >
+    <div class="input-group-append">
+        <button class="copyBtn btn btn-dark" id="link-addon" type="button" data-clipboard-target="#copyText">
+          <i class="fas fa-copy"> Copy </i>
+        </button>
+    </div>
   </div>
+
+  <br>
+  <div class="alert alert-info" role="alert">
+    {% if clipObj.link_duration == 0 %}
+      <p>Note: Clip was created with "Delete on Access". It will be removed automatically after 30 days in case of no access.</p>
+    {% else %}
+    <h5>Additional Details:</h5>
+    {# <p>Clip will expire in: {{ clipObj.expiry_date - now  </p> #}
+    <p>Clip expiry time:&nbsp&nbsp {{clipObj.expiry_date | date:"DATETIME_FORMAT" }}</p>
+    <p>Current time:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{% now "DATETIME_FORMAT" %}</p>
+    {% endif %}
+  </div>
+
 </div>
 </div>
 
