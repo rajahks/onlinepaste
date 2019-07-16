@@ -11,3 +11,5 @@ WORKDIR /code
 COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 COPY . /code/
+
+CMD ["bash", "docker-entrypoint.sh"]
