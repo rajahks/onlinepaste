@@ -87,6 +87,18 @@ DATABASES = {
     }
 }
 
+# In case MYSQL is configured then override using it values. 
+if os.environ.get('MYSQL_HOST'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': os.environ.get('MYSQL_HOST'),
+        'NAME': os.environ.get('MYSQL_DATABASE'),
+        'USER': os.environ.get('MYSQL_USER'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'OPTIONS': {
+            'read_default_file': '/etc/mysql/my.cnf',
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
