@@ -25,16 +25,3 @@ class Clip(models.Model):
 
     def __str__(self):
         return self.clipId
-
-def testFun():
-    print("testFun called")
-    for i in Clip.objects.all():
-        print("$$ clip:" + str(i))
-        # curTime = datetime.utcnow()
-        # if curTime > i.expiry_date:
-        #     print("Exipired clip: " + clip)
-        #     #clip.delete()
-        # else:
-        #     print("Clip: "+clip +" not yet expired")
-    # for i in Clip.objects.all():
-    #     print(i)
