@@ -1,7 +1,6 @@
 from django_cron import CronJobBase, Schedule
 from clip.models import Clip
 from datetime import datetime,timezone
-from clip.models import testFun
 
 import logging
 logger = logging.getLogger(__name__)
@@ -19,7 +18,6 @@ class DelExpiredPosts(CronJobBase):
     def do(self):
         # print("$$ job ran. Count:"  + str(self.clipList.count()) )
         # print("$$ job ran Entries:" +  str(self.clipList.all()) )
-        # //testFun()
         logger.info("DelExpiredPosts do function was triggered. count=%d list: %s"%(self.clipList.count(),str(self.clipList.all()),))
         for clip in self.clipList.all():
             # print("$$ clip:" + str(clip))
