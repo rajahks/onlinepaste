@@ -16,12 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from clip.views import index,check_post, isKeywordUsed, faqView
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('',index,name='index'),
     path('admin/', admin.site.urls),
     path('isKeywordUsed/',isKeywordUsed, name='isKeywordUsed'),
     path('faq/',faqView, name="faq"),
+    path('robots.txt', TemplateView.as_view(template_name="Clipstore/robots.txt", content_type='text/plain')),
     path('<slug:clipId>/',check_post, name='check_post'),
 
 ]
